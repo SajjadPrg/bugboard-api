@@ -1,0 +1,93 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            Int        @id @default(autoincrement())
+  username      String     @unique
+  email         String     @unique
+  password      String
+  active        Boolean    @default(false)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  forgottenCode Int?
+  bugs          Bug[] // ارتباط یک به چند با باگ‌ها
+  solutions     Solution[] // ارتباط یک به چند با راه‌حل‌ها
+  articles      Article[] // ارتباط یک به چند با مقالات
+  comments      Comment[] // ارتباط یک به چند با کامنت‌ها
+  likes         Like[] // ارتباط یک به چند با لایک‌ها
+  dislikes      Dislike[] // ارتباط یک به چند با دیسلایک‌ها
+}
+
+model Bug {
+  id          Int        @id @default(autoincrement())
+  code        String
+  description String
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  user        User       @relation(fields: [userId], references: [id])
+  userId      Int
+  solutions   Solution[] // ارتباط یک به چند با راه‌حل‌ها
+}
+
+model Solution {
+  id        Int       @id @default(autoincrement())
+  content   String
+  code      String?
+  createdAt DateTime  @default(now())
+  bug       Bug       @relation(fields: [bugId], references: [id])
+  bugId     Int
+  user      User      @relation(fields: [userId], references: [id])
+  userId    Int
+  likes     Like[] // ارتباط یک به چند با لایک‌ها
+  dislikes  Dislike[] // ارتباط یک به چند با دیسلایک‌ها
+}
+
+model Article {
+  id        Int       @id @default(autoincrement())
+  title     String
+  content   String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  views     Int       @default(0)
+  user      User      @relation(fields: [userId], references: [id])
+  userId    Int
+  comments  Comment[] // ارتباط یک به چند با کامنت‌ها
+  likes     Like[] // ارتباط یک به چند با لایک‌ها
+  dislikes  Dislike[] // ارتباط یک به چند با دیسلایک‌ها
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+  article   Article  @relation(fields: [articleId], references: [id])
+  articleId Int
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+}
+
+model Like {
+  id         Int       @id @default(autoincrement())
+  user       User      @relation(fields: [userId], references: [id])
+  userId     Int
+  solution   Solution? @relation(fields: [solutionId], references: [id])
+  solutionId Int?
+  article    Article?  @relation(fields: [articleId], references: [id])
+  articleId  Int?
+}
+
+model Dislike {
+  id         Int       @id @default(autoincrement())
+  user       User      @relation(fields: [userId], references: [id])
+  userId     Int
+  solution   Solution? @relation(fields: [solutionId], references: [id])
+  solutionId Int?
+  article    Article?  @relation(fields: [articleId], references: [id])
+  articleId  Int?
+}
