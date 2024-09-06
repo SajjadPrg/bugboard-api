@@ -30,7 +30,7 @@ model Bug {
   description String
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
-  user        User       @relation(fields: [userId], references: [id])
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      Int
   solutions   Solution[] // ارتباط یک به چند با راه‌حل‌ها
 }
@@ -40,9 +40,9 @@ model Solution {
   content   String
   code      String?
   createdAt DateTime  @default(now())
-  bug       Bug       @relation(fields: [bugId], references: [id])
+  bug       Bug       @relation(fields: [bugId], references: [id], onDelete: Cascade)
   bugId     Int
-  user      User      @relation(fields: [userId], references: [id])
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int
   likes     Like[] // ارتباط یک به چند با لایک‌ها
   dislikes  Dislike[] // ارتباط یک به چند با دیسلایک‌ها
@@ -55,7 +55,7 @@ model Article {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   views     Int       @default(0)
-  user      User      @relation(fields: [userId], references: [id])
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int
   comments  Comment[] // ارتباط یک به چند با کامنت‌ها
   likes     Like[] // ارتباط یک به چند با لایک‌ها
@@ -66,28 +66,28 @@ model Comment {
   id        Int      @id @default(autoincrement())
   content   String
   createdAt DateTime @default(now())
-  article   Article  @relation(fields: [articleId], references: [id])
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
   articleId Int
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int
 }
 
 model Like {
   id         Int       @id @default(autoincrement())
-  user       User      @relation(fields: [userId], references: [id])
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     Int
-  solution   Solution? @relation(fields: [solutionId], references: [id])
+  solution   Solution? @relation(fields: [solutionId], references: [id], onDelete: Cascade)
   solutionId Int?
-  article    Article?  @relation(fields: [articleId], references: [id])
+  article    Article?  @relation(fields: [articleId], references: [id], onDelete: Cascade)
   articleId  Int?
 }
 
 model Dislike {
   id         Int       @id @default(autoincrement())
-  user       User      @relation(fields: [userId], references: [id])
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     Int
-  solution   Solution? @relation(fields: [solutionId], references: [id])
+  solution   Solution? @relation(fields: [solutionId], references: [id], onDelete: Cascade)
   solutionId Int?
-  article    Article?  @relation(fields: [articleId], references: [id])
+  article    Article?  @relation(fields: [articleId], references: [id], onDelete: Cascade)
   articleId  Int?
 }

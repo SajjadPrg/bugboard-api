@@ -6,6 +6,7 @@
   "dependencies": {
     "@hono/zod-validator": "^0.2.2",
     "@prisma/client": "5.19.1",
+    "fuse.js": "^7.0.0",
     "hono": "^4.5.11",
     "nodemailer": "^6.9.15",
     "zod": "^3.23.8"
