@@ -54,7 +54,6 @@ model Article {
   content   String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  views     Int       @default(0)
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int
   comments  Comment[] // ارتباط یک به چند با کامنت‌ها

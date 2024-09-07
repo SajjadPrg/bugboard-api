@@ -149,9 +149,10 @@ article.get(
       };
 
       const fuse = new Fuse(allArticles, options);
-      const foundArticles = fuse
-        .search(searchTerm)
-        .map((result) => result.item);
+      const foundArticles = fuse.search(searchTerm).map((result) => {
+        const { id, ...rest } = result.item; // حذف شناسه از مقاله
+        return rest;
+      });
 
       return c.json({ message: "Articles found", foundArticles });
     } catch (error: any) {
