@@ -34,3 +34,10 @@ export const normalizeEnglishText = (text: string) => {
     .filter((word) => !stopWords.includes(word)) // حذف کلمات پرتکرار
     .join(" "); // تبدیل مجدد به متن
 };
+
+export const normalizeText = (text: string) => {
+  const language = detectLanguage(text);
+  return language === "persian"
+    ? normalizePersianText(text)
+    : normalizeEnglishText(text);
+};
