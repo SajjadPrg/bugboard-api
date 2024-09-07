@@ -6,13 +6,13 @@ import {
   updateBugSchema,
 } from "../schemas/bugSchema";
 import { activateAndJwtMiddleware } from "../middlewares/authMiddleware";
-import db, {
+import {
   detectLanguage,
   normalizeEnglishText,
   normalizePersianText,
-} from "../services/db";
+} from "../services/normalize";
 import Fuse from "fuse.js";
-import { useId } from "hono/jsx";
+import db from "../services/db";
 
 const bug = new Hono();
 
