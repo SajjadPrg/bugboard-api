@@ -14,7 +14,10 @@ import {
   sendActiveUserEmail,
   sendPasswordResetCodeEmail,
 } from "../services/email";
-import { jwtMiddleware } from "../middlewares/authMiddleware";
+import {
+  activateAndJwtMiddleware,
+  jwtMiddleware,
+} from "../middlewares/authMiddleware";
 
 const auth = new Hono();
 
@@ -306,4 +309,14 @@ auth.post(
     }
   }
 );
+
+auth.get("/validate-token", jwtMiddleware, (c) => {
+  try {
+    return c.json({ message: "Token is valid" }, { status: 200 });
+  } catch (error: any) {
+    console.log(error.message);
+    return c.json({ message: "Internal error" }, { status: 500 });
+  }
+});
+
 export default auth;

@@ -5,8 +5,11 @@ import solution from "./app/plugins/solutionPlugin";
 import article from "./app/plugins/articlePlugin";
 import like from "./app/plugins/likePlugin";
 import comment from "./app/plugins/commentPlugin";
+import { cors } from "hono/cors";
 
 const app = new Hono();
+
+app.use(cors());
 
 app.get("/", (c) => {
   return c.text("Hello Hono!");
