@@ -1,11 +1,15 @@
 {
   "name": "bugboard-api",
   "scripts": {
-    "dev": "bun run --hot src/index.ts"
+    "dev": "bun run --hot src/index.ts",
+    "build-app": "bun build ./src/index.ts --target bun --outfile dist/app.js",
+    "prestart": "bun run build-app",
+    "start": "bun run dist/app.js"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.2.2",
     "@prisma/client": "5.19.1",
+    "dotenv": "^16.4.5",
     "fuse.js": "^7.0.0",
     "hono": "^4.5.11",
     "nodemailer": "^6.9.15",
