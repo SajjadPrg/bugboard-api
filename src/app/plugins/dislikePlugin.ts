@@ -1,15 +1,16 @@
 import { Hono } from "hono";
 import { activateAndJwtMiddleware } from "../middlewares/authMiddleware";
 import { zValidator } from "@hono/zod-validator";
-import { likeSchema } from "../schemas/likeSchema";
+
 import db from "../services/db";
+import { dislikeSchema } from "../schemas/dislikeSchema";
 
-const like = new Hono();
+const dislike = new Hono();
 
-like.post(
+dislike.post(
   "",
   activateAndJwtMiddleware,
-  zValidator("json", likeSchema),
+  zValidator("json", dislikeSchema),
   async (c) => {
     const validData = await c.req.valid("json");
     const userId = await c.get("user").userId;
@@ -25,21 +26,13 @@ like.post(
       return c.json(
         {
           message:
-            "You cannot like both an article and a solution at the same time",
+            "You cannot dislike both an article and a solution at the same time",
         },
         { status: 400 }
       );
     }
 
     try {
-      const existingLike = await db.like.findFirst({
-        where: {
-          userId,
-          articleId: validData.articleId,
-          solutionId: validData.solutionId,
-        },
-      });
-
       const existingDislike = await db.dislike.findFirst({
         where: {
           userId,
@@ -48,12 +41,13 @@ like.post(
         },
       });
 
-      if (existingLike) {
-        return c.json(
-          { message: "You have already liked this item" },
-          { status: 400 }
-        );
-      }
+      const existingLike = await db.like.findFirst({
+        where: {
+          userId,
+          articleId: validData.articleId,
+          solutionId: validData.solutionId,
+        },
+      });
 
       if (existingDislike) {
         return c.json(
@@ -62,8 +56,15 @@ like.post(
         );
       }
 
-      // ایجاد لایک جدید
-      const newLike = await db.like.create({
+      if (existingLike) {
+        return c.json(
+          { message: "You have already liked this item" },
+          { status: 400 }
+        );
+      }
+
+      // ایجاد دیسلایک جدید
+      const newDislike = await db.dislike.create({
         data: {
           userId,
           articleId: validData.articleId,
@@ -72,8 +73,8 @@ like.post(
       });
 
       return c.json({
-        message: "Like created successfully",
-        data: newLike,
+        message: "Dislike created successfully",
+        data: newDislike,
       });
     } catch (error: any) {
       console.log(error.message);
@@ -82,10 +83,10 @@ like.post(
   }
 );
 
-like.delete(
+dislike.delete(
   "",
   activateAndJwtMiddleware,
-  zValidator("json", likeSchema),
+  zValidator("json", dislikeSchema),
   async (c) => {
     const validData = await c.req.valid("json");
     const userId = await c.get("user").userId;
@@ -101,14 +102,14 @@ like.delete(
       return c.json(
         {
           message:
-            "You cannot like both an article and a solution at the same time",
+            "You cannot dislike both an article and a solution at the same time",
         },
         { status: 400 }
       );
     }
 
     try {
-      const existingLike = await db.like.findFirst({
+      const existingDislike = await db.dislike.findFirst({
         where: {
           userId,
           articleId: validData.articleId,
@@ -116,15 +117,15 @@ like.delete(
         },
       });
 
-      if (!existingLike) {
-        return c.json({ message: "Like not found" }, { status: 404 });
+      if (!existingDislike) {
+        return c.json({ message: "Dislike not found" }, { status: 404 });
       }
 
-      await db.like.delete({
-        where: { id: existingLike.id },
+      await db.dislike.delete({
+        where: { id: existingDislike.id },
       });
 
-      return c.json({ message: "Like deleted successfully" });
+      return c.json({ message: "Dislike deleted successfully" });
     } catch (error: any) {
       console.log(error.message);
       return c.json({ message: "Internal error" });
@@ -132,4 +133,4 @@ like.delete(
   }
 );
 
-export default like;
+export default dislike;
